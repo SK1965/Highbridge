@@ -1,4 +1,4 @@
-export const saveWorkflows = (workflows) => {
+export const saveWorkflows = (workflows : {}) => {
     localStorage.setItem('workflows', JSON.stringify(workflows));
   };
   
@@ -10,12 +10,12 @@ export const saveWorkflows = (workflows) => {
     return [];
   };
   
-  export const getWorkflowById = (id) => {
+  export const getWorkflowById = (id : string) => {
     const workflows = loadWorkflows();
     return workflows.find(w => w.id === id);
   };
   
-  export const updateWorkflow = (updated) => {
+  export const updateWorkflow = (updated : {}) => {
     const workflows = loadWorkflows();
     const index = workflows.findIndex(w => w.id === updated.id);
     if (index !== -1) {
