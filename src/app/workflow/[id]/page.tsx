@@ -1,25 +1,36 @@
-'use client'
-
+'use client';
 import { useRouter, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getWorkflowById, updateWorkflow } from "@/utils/storage";
+
+// Define types for the workflow and nodes
+interface Node {
+  id: string;
+  label: string;
+}
+
+interface Workflow {
+  id: string;
+  name: string;
+  nodes: Node[];
+}
 
 export default function WorkflowPage() {
   const router = useRouter();
   const params = useParams();
   const id = params?.id as string;
-  const [workflow, setWorkflow] = useState<any | null>(null);
+  const [workflow, setWorkflow] = useState<Workflow | null>(null); // Specify type here
 
   useEffect(() => {
     if (id) {
-      const wf = getWorkflowById(id);
+      const wf = getWorkflowById(id) as Workflow;
       setWorkflow(wf);
     }
   }, [id]);
 
   const addNode = () => {
     if (!workflow) return;
-    const newNode = { id: Date.now().toString(), label: "New Node" };
+    const newNode: Node = { id: Date.now().toString(), label: "New Node" };
     const updated = { ...workflow, nodes: [...workflow.nodes, newNode] };
     setWorkflow(updated);
     updateWorkflow(updated);
@@ -27,7 +38,7 @@ export default function WorkflowPage() {
 
   const updateNodeLabel = (id: string, label: string) => {
     if (!workflow) return;
-    const updatedNodes = workflow.nodes.map((node: any) =>
+    const updatedNodes = workflow.nodes.map((node) =>
       node.id === id ? { ...node, label } : node
     );
     const updated = { ...workflow, nodes: updatedNodes };
@@ -44,7 +55,7 @@ export default function WorkflowPage() {
 
   const deleteNode = (id: string) => {
     if (!workflow) return;
-    const updatedNodes = workflow.nodes.filter((node: any) => node.id !== id);
+    const updatedNodes = workflow.nodes.filter((node) => node.id !== id);
     const updated = { ...workflow, nodes: updatedNodes };
     setWorkflow(updated);
     updateWorkflow(updated);
@@ -63,7 +74,7 @@ export default function WorkflowPage() {
         <div className="bg-green-400 text-white text-center py-2 px-4 rounded-full w-24">Start</div>
 
         {/* Nodes with Arrows */}
-        {workflow.nodes.map((node: any) => (
+        {workflow.nodes.map((node) => (
           <div key={node.id} className="flex flex-col items-center space-y-2">
 
             {/* Arrow */}

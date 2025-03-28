@@ -1,18 +1,30 @@
-'use client'
+'use client';
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { loadWorkflows, saveWorkflows } from "@/utils/storage";
 
+// Define a type for the workflow
+interface Workflow {
+  id: string;
+  name: string;
+  nodes: { id: string; label: string }[]; // Assuming nodes have an ID and a label
+}
+
 export default function Home() {
-  const [workflows, setWorkflows] = useState<any[]>([]);
+  const [workflows, setWorkflows] = useState<Workflow[]>([]); // Specify type here
   const router = useRouter();
 
   useEffect(() => {
-    setWorkflows(loadWorkflows());
+    const workflows = loadWorkflows();
+    setWorkflows(workflows);
   }, []);
 
   const createWorkflow = () => {
-    const newWorkflow = { id: Date.now().toString(), name: `Workflow ${workflows.length + 1}`, nodes: [] };
+    const newWorkflow: Workflow = { 
+      id: Date.now().toString(), 
+      name: `Workflow ${workflows.length + 1}`, 
+      nodes: [] 
+    };
     const updated = [...workflows, newWorkflow];
     saveWorkflows(updated);
     setWorkflows(updated);
